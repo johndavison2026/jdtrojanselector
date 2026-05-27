@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>John Davison Trojan Horse Selector</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f5f6f8;
+    color: #1a1d24;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 48px 20px 80px;
+  }
+
+  .wrapper {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 36px;
+  }
+
+  h1 {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 6px;
+  }
+
+  .header-sub {
+    font-size: 0.85rem;
+    color: #888;
+  }
+
+  .warning {
+    margin-top: 12px;
+    display: inline-block;
+    background: #fff3f3;
+    border: 1px solid #f5c2c2;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.72rem;
+    color: #c0392b;
+  }
+
+  .sec-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #999;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  /* Trojan grid */
+  .trojan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+
+  .trojan-card {
+    background: #fff;
+    border: 1.5px solid #e4e6ec;
+    border-radius: 8px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+  }
+
+  .trojan-card:hover {
+    border-color: #bbb;
+    background: #fafafa;
+  }
+
+  .trojan-card.selected {
+    border-color: #e05252;
+    background: #fff8f8;
+  }
+
+  .t-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #222;
+  }
+
+  .trojan-card.selected .t-name { color: #e05252; }
+
+  /* Music panel */
+  .music-panel {
+    background: #fff;
+    border: 1.5px solid #e4e6ec;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #999;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .field input {
+    width: 100%;
+    background: #f9f9fb;
+    border: 1.5px solid #e4e6ec;
+    border-radius: 6px;
+    padding: 9px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    color: #111;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .field input::placeholder { color: #bbb; }
+  .field input:focus { border-color: #aaa; }
+
+  .gen-btn {
+    width: 100%;
+    padding: 12px;
+    background: #1a1d24;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .gen-btn:hover { background: #2e3140; }
+
+  /* Output */
+  .output-panel {
+    margin-top: 20px;
+    background: #fff;
+    border: 1.5px solid #e4e6ec;
+    border-radius: 8px;
+    overflow: hidden;
+    display: none;
+  }
+
+  .output-panel.visible { display: block; }
+
+  .output-header {
+    padding: 10px 16px;
+    border-bottom: 1px solid #e4e6ec;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9f9fb;
+  }
+
+  .output-header-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #999;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .copy-btn {
+    background: transparent;
+    border: 1.5px solid #e4e6ec;
+    border-radius: 5px;
+    padding: 4px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .copy-btn:hover { background: #eee; }
+
+  .output-body {
+    padding: 18px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    color: #222;
+    line-height: 1.7;
+  }
+
+  footer {
+    margin-top: 48px;
+    text-align: center;
+    font-size: 0.68rem;
+    color: #bbb;
+    line-height: 2;
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <h1>John Davison Trojan Horse Selector</h1>
+    <div class="header-sub">Select your trojan and music for the next video.</div>
+    <div class="warning">> For entertainment purposes only. Tested inside a VM only, do not run on physical hardware. <</div>
+  </header>
+
+  <div class="sec-title">Select Trojan</div>
+  <div class="trojan-grid" id="trojanGrid"></div>
+
+  <div class="sec-title">Music Info</div>
+  <div class="music-panel">
+    <div class="field">
+      <label>Song / Track Name</label>
+      <input type="text" id="trackName" placeholder="e.g. NH22 - Isolation" />
+    </div>
+    <div class="field">
+      <label>Creator / Artist</label>
+      <input type="text" id="creatorName" placeholder="e.g. UnknownCreator" />
+    </div>
+  </div>
+
+  <button class="gen-btn" onclick="generate()">Generate Prompt</button>
+
+  <div class="output-panel" id="outputPanel">
+    <div class="output-header">
+      <span class="output-header-label">Generated Prompt</span>
+      <button class="copy-btn" onclick="copyOutput()">Copy</button>
+    </div>
+    <div class="output-body" id="outputBody"></div>
+  </div>
+
+  <footer>
+    John Davison Trojan Horse Selector &nbsp;·&nbsp; For entertainment purposes only. &nbsp;·&nbsp; GNU General Public Licence John Davison 2026
+  </footer>
+</div>
+
+<script>
+  const trojans = [
+    "sigma.exe",
+    "quantizer.exe",
+    "tetroxide.exe",
+    "MBRDemon",
+    "Hyptonium",
+    "NoEscape.exe",
+    "HorrorXp.exe",
+    "Laplace.exe",
+  ];
+
+  let selected = null;
+  const grid = document.getElementById('trojanGrid');
+
+  trojans.forEach(name => {
+    const card = document.createElement('div');
+    card.className = 'trojan-card';
+    card.innerHTML = `<div class="t-name">${name}</div>`;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.trojan-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selected = name;
+    });
+    grid.appendChild(card);
+  });
+
+  function generate() {
+    const track   = document.getElementById('trackName').value.trim()   || 'Unknown Track';
+    const creator = document.getElementById('creatorName').value.trim() || 'UnknownCreator';
+    const trojan  = selected || '(no trojan selected)';
+
+    const prompt = `Hi, i selected virus: ${trojan} and Song/Music: ${track} by ${creator}.`;
+
+    document.getElementById('outputBody').textContent = prompt;
+    const panel = document.getElementById('outputPanel');
+    panel.classList.add('visible');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function copyOutput() {
+    const text = document.getElementById('outputBody').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 1800);
+    });
+  }
+</script>
+</body>
+</html>
