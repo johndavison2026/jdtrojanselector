@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>John Davison Trojan Horse Selector</title>
+<link rel="icon" type="image/png" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,9 +22,7 @@
     margin: 0 auto;
   }
 
-  header {
-    margin-bottom: 36px;
-  }
+  header { margin-bottom: 36px; }
 
   h1 {
     font-size: clamp(1.5rem, 4vw, 2rem);
@@ -32,10 +31,7 @@
     margin-bottom: 6px;
   }
 
-  .header-sub {
-    font-size: 0.85rem;
-    color: #888;
-  }
+  .header-sub { font-size: 0.85rem; color: #888; }
 
   .warning {
     margin-top: 12px;
@@ -57,7 +53,38 @@
     margin-bottom: 10px;
   }
 
-  /* Trojan grid */
+  .ran-box {
+    background: #fff;
+    border: 1.5px solid #e4e6ec;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 28px;
+    font-size: 0.82rem;
+    color: #444;
+    line-height: 1.8;
+  }
+
+  .ran-box .ran-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ran-box .ran-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: #222;
+  }
+
+  .ran-box .ran-music { color: #888; font-size: 0.78rem; }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #e4e6ec;
+    margin: 10px 0;
+  }
+
+  /* Grids */
   .trojan-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -65,7 +92,14 @@
     margin-bottom: 28px;
   }
 
-  .trojan-card {
+  .win-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+
+  .trojan-card, .win-card {
     background: #fff;
     border: 1.5px solid #e4e6ec;
     border-radius: 8px;
@@ -75,7 +109,7 @@
     user-select: none;
   }
 
-  .trojan-card:hover {
+  .trojan-card:hover, .win-card:hover {
     border-color: #bbb;
     background: #fafafa;
   }
@@ -83,6 +117,11 @@
   .trojan-card.selected {
     border-color: #e05252;
     background: #fff8f8;
+  }
+
+  .win-card.selected {
+    border-color: #3b82f6;
+    background: #f0f6ff;
   }
 
   .t-name {
@@ -93,6 +132,15 @@
   }
 
   .trojan-card.selected .t-name { color: #e05252; }
+
+  .w-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #222;
+  }
+
+  .win-card.selected .w-name { color: #3b82f6; }
 
   /* Music panel */
   .music-panel {
@@ -215,13 +263,22 @@
   <header>
     <h1>John Davison Trojan Horse Selector</h1>
     <div class="header-sub">Select your trojan and music for the next video.</div>
-    <div class="warning">> For entertainment purposes only. Tested inside a VM only, do not run on physical hardware. <</div>
+    <div class="warning">&gt; For entertainment purposes only. Tested inside a VM only, do not run on physical hardware. &lt;</div>
   </header>
+
   <div class="sec-title">Current ran trojans:</div>
-  <div class="sec-title">Sigma.exe with music: SR20DET by blksmiith</div>
-  <div class="sec-title">----------------------------------</div>
-  <div class="sec-title">select trojan:</div>
+  <div class="ran-box">
+    <div class="ran-row">
+      <span class="ran-name">sigma.exe with music</span>
+      <span class="ran-music"> SR20DET by blksmiith &nbsp;·&nbsp; Windows 10 21H2 LTSC</span>
+    </div>
+  </div>
+
+  <div class="sec-title">Select Trojan</div>
   <div class="trojan-grid" id="trojanGrid"></div>
+
+  <div class="sec-title">Windows 10 Version</div>
+  <div class="win-grid" id="winGrid"></div>
 
   <div class="sec-title">Music Info</div>
   <div class="music-panel">
@@ -261,9 +318,19 @@
     "Laplace.exe",
   ];
 
-  let selected = null;
-  const grid = document.getElementById('trojanGrid');
+  const winVersions = [
+    "Windows 10 RTM",
+    "Windows 10 1809",
+    "Windows 10 1909",
+    "Windows 10 21H2 LTSC",
+    "Windows 10 22H2",
+  ];
 
+  let selected = null;
+  let selectedWin = null;
+
+  // Trojan cards
+  const grid = document.getElementById('trojanGrid');
   trojans.forEach(name => {
     const card = document.createElement('div');
     card.className = 'trojan-card';
@@ -276,12 +343,27 @@
     grid.appendChild(card);
   });
 
+  // Windows version cards
+  const winGrid = document.getElementById('winGrid');
+  winVersions.forEach(ver => {
+    const card = document.createElement('div');
+    card.className = 'win-card';
+    card.innerHTML = `<div class="w-name">${ver}</div>`;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.win-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedWin = ver;
+    });
+    winGrid.appendChild(card);
+  });
+
   function generate() {
     const track   = document.getElementById('trackName').value.trim()   || 'Unknown Track';
     const creator = document.getElementById('creatorName').value.trim() || 'UnknownCreator';
-    const trojan  = selected || '(no trojan selected)';
+    const trojan  = selected    || '(no trojan selected)';
+    const win     = selectedWin || '(no version selected)';
 
-    const prompt = `Hi, i selected virus: ${trojan} and Song/Music: ${track} by ${creator}.`;
+    const prompt = `Hi, i selected virus: ${trojan} and Song/Music: ${track} by ${creator}. Windows version: ${win}.`;
 
     document.getElementById('outputBody').textContent = prompt;
     const panel = document.getElementById('outputPanel');
