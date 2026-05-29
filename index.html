@@ -293,26 +293,26 @@
   <div class="sec-title">Current ran trojans:</div>
   <div class="ran-box">
     <div class="ran-row">
-      <span class="ran-name">sigma.exe with music</span>
-      <span class="ran-music"> SR20DET by blksmiith &nbsp;·&nbsp; Windows 10 21H2 LTSC</span>
+      <span class="ran-name">sigma.exe, HorrorXp (Windows XP horror edition), tetroxide.exe, (faliure) MBRDemon</span>
     </div>
+  <p>MBRDemon was a faliure because it was for the old master boot record and not for the new guid partition table.</p>
   </div>
 
   <div class="sec-title">Select Trojan</div>
   <div class="trojan-grid" id="trojanGrid"></div>
 
-  <div class="sec-title">Windows 10 Version</div>
+  <div class="sec-title">Windows 10 Version (older to newer)</div>
   <div class="win-grid" id="winGrid"></div>
 
   <div class="sec-title">Music Info</div>
   <div class="music-panel">
     <div class="field">
       <label>Song / Track Name</label>
-      <input type="text" id="trackName" placeholder="e.g. NH22 - Isolation" />
+      <input type="text" id="trackName" placeholder="e.g. Isolation" />
     </div>
     <div class="field">
       <label>Creator / Artist</label>
-      <input type="text" id="creatorName" placeholder="e.g. UnknownCreator" />
+      <input type="text" id="creatorName" placeholder="e.g. NightHawk22" />
     </div>
   </div>
 
@@ -342,18 +342,17 @@
 <script>
   const trojans = [
     "quantizer.exe",
-    "tetroxide.exe",
     "Hyptonium",
     "NoEscape.exe",
-    "HorrorXp.exe",
     "Laplace.exe",
   ];
 
   const winVersions = [
     "Windows 10 RTM",
+    "Windows 10 1709",
     "Windows 10 1809",
     "Windows 10 1909",
-    "Windows 10 21H2 LTSC",
+    "Windows 10 21H2 (LTSC)",
     "Windows 10 22H2",
   ];
 
